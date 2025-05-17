@@ -52,7 +52,8 @@ def translate_multi():
             results.append({
                 "code": code,
                 "description": result["description"],
-                "ideogram": result["ideogram"]
+                "ideogram": result["ideogram"],
+                'symbol': result["symbol"]
             })
         else:
             not_found.append(code)
@@ -82,6 +83,7 @@ def upload_and_classify():
             return jsonify({
                 "code": code,
                 "description": result["description"],
+                "symbol": result["symbol"],
                 "ideogram": result["ideogram"],
                 "confidence": float(prediction[idx]),
                 "images": result["images"]

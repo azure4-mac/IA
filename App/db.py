@@ -13,7 +13,7 @@ def get_hieroglyph(code):
     with conn.cursor() as cur:
         # Busca o hieróglifo pelo código de Gardiner
         cur.execute("""
-            SELECT id, gardiner_code, unicode_code, description, ideogram, notes 
+            SELECT id, gardiner_code, unicode_code, description, ideogram, notes, symbol
             FROM hieroglyph 
             WHERE gardiner_code = %s
         """, (code,))
@@ -28,6 +28,7 @@ def get_hieroglyph(code):
         description = row[3]
         ideogram = row[4]
         notes = row[5]
+        symbol =[6]
 
         # Busca imagens relacionadas
         cur.execute("""
