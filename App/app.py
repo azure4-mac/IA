@@ -3,18 +3,17 @@ from flask_cors import CORS
 from PIL import Image
 import numpy as np
 from tensorflow.keras.models import load_model
-import os
 from db import get_hieroglyph
 
 app = Flask(__name__)
 CORS(app)
 
-# Load trained model and label map
 model = load_model("hieroglyph_model.h5")
+
 labels = []  
 
 def preprocess(img):
-    img = img.resize((64, 64))  # Tamanho que o modelo foi treinado
+    img = img.resize((64, 64))
     img = np.array(img) / 255.0
     return img.reshape((1, 64, 64, 3))
 
@@ -52,8 +51,8 @@ def translate_multi():
         if result:
             results.append({
                 "code": code,
-                "transliteration": result["transliteration"],
-                "meaning": result["meaning"]
+                "description": result["description"],
+                "ideogram": result["ideogram"]
             })
         else:
             not_found.append(code)
@@ -62,31 +61,33 @@ def translate_multi():
         "not_found": not_found
     })
 
-# Upload de imagem para identificar o hieróglifo
 @app.route('/upload', methods=['POST'])
 def upload_and_classify():
     if 'image' not in request.files:
         return jsonify({"error": "No image uploaded"}), 400
     file = request.files['image']
-    
+
     try:
         img = Image.open(file.stream).convert("RGB")
         input_img = preprocess(img)
         prediction = model.predict(input_img)[0]
         idx = np.argmax(prediction)
-        code = labels[idx]
         
+        if idx >= len(labels):
+            return jsonify({"error": "Label index out of range"}), 500
+        
+        code = labels[idx]
         result = get_hieroglyph(code)
         if result:
             return jsonify({
                 "code": code,
-                "transliteration": result["transliteration"],
-                "meaning": result["meaning"],
-                "confidence": float(prediction[idx])
+                "description": result["description"],
+                "ideogram": result["ideogram"],
+                "confidence": float(prediction[idx]),
+                "images": result["images"]
             })
         else:
             return jsonify({"error": "Hieroglyph not found"}), 404
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-

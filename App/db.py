@@ -5,25 +5,29 @@ import psycopg
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
+
+# Cria a conexão
 conn = psycopg.connect(DATABASE_URL)
 
 def get_hieroglyph(code):
     with conn.cursor() as cur:
-        # Busca dados básicos do hieróglifo
+        # Busca o hieróglifo pelo código de Gardiner
         cur.execute("""
-            SELECT id, gardiner_code, description, ideogram, notes 
+            SELECT id, gardiner_code, unicode_code, description, ideogram, notes 
             FROM hieroglyph 
             WHERE gardiner_code = %s
         """, (code,))
+        
         row = cur.fetchone()
         if not row:
             return None
 
         hieroglyph_id = row[0]
         gardiner_code = row[1]
-        description = row[2]
-        ideogram = row[3]
-        notes = row[4]
+        unicode_code = row[2]
+        description = row[3]
+        ideogram = row[4]
+        notes = row[5]
 
         # Busca imagens relacionadas
         cur.execute("""
@@ -31,17 +35,17 @@ def get_hieroglyph(code):
             FROM hieroglyph_images 
             WHERE hieroglyph_id = %s
         """, (hieroglyph_id,))
+        
         images = cur.fetchall()
 
-        images_list = []
-        for img_url, img_desc in images:
-            images_list.append({
-                "image_url": img_url,
-                "description": img_desc
-            })
+        images_list = [
+            {"image_url": img[0], "description": img[1]}
+            for img in images
+        ]
 
         return {
             "gardiner_code": gardiner_code,
+            "unicode_code": unicode_code,
             "description": description,
             "ideogram": ideogram,
             "notes": notes,

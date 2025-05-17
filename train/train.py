@@ -16,7 +16,6 @@ model = Sequential([
 
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-# Prepara os dados de treino e validação
 datagen = ImageDataGenerator(rescale=1./255, validation_split=0.2)
 
 train_gen = datagen.flow_from_directory(
@@ -33,10 +32,8 @@ val_gen = datagen.flow_from_directory(
     subset='validation'
 )
 
-# Treina o modelo
 model.fit(train_gen, validation_data=val_gen, epochs=10)
 
-# Salva o modelo
 model.save("hieroglyph_model.h5")
 
 # continua o treinamento com novos dados
