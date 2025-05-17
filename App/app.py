@@ -11,7 +11,7 @@ CORS(app)
 
 # Load trained model and label map
 model = load_model("hieroglyph_model.h5")
-labels = ["A1", "A2", "A3"]  # Adapte com seus códigos reais
+labels = []  
 
 def preprocess(img):
     img = img.resize((64, 64))  # Tamanho que o modelo foi treinado
