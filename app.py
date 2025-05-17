@@ -62,7 +62,7 @@ def translate_multi():
         "not_found": not_found
     })
 
-# 🔥 NOVO ENDPOINT: Upload de imagem para identificar o hieróglifo
+# Upload de imagem para identificar o hieróglifo
 @app.route('/upload', methods=['POST'])
 def upload_and_classify():
     if 'image' not in request.files:
@@ -89,5 +89,4 @@ def upload_and_classify():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-if __name__ == '__main__':
-    app.run(debug=True)
+
