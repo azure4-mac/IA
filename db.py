@@ -1,17 +1,25 @@
+from dotenv import load_dotenv
+import os
 import psycopg
-from psycopg.rows import dict_row
 
-conn = psycopg.connect(
-    dbname="teubanco",
-    user="teuusuario",
-    password="tuasenha",
-    host="localhost",
-    port="5432",
-    row_factory=dict_row
-)
+# Carrega variáveis do .env
+load_dotenv()
 
-def get_meaning_by_code(code):
+# Conexão com o banco de dados Neon
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+# Cria a conexão
+conn = psycopg.connect(DATABASE_URL)
+
+# Função para buscar um hieróglifo pelo código MdC (ex: A15)
+def get_hieroglyph(code):
     with conn.cursor() as cur:
-        cur.execute("SELECT * FROM hieroglyphs WHERE code = %s", (code,))
-        result = cur.fetchone()
-        return result
+        cur.execute("SELECT transliteration, meaning, img_url FROM hieroglyphs WHERE code = %s", (code,))
+        row = cur.fetchone()
+        if row:
+            return {
+                "transliteration": row[0],
+                "meaning": row[1],
+                "img_url": row[2]   
+            }
+        return None
