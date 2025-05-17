@@ -4,7 +4,7 @@ from PIL import Image
 import numpy as np
 from tensorflow.keras.models import load_model
 import os
-from hieroglyph import get_hieroglyph
+from db import get_hieroglyph
 
 app = Flask(__name__)
 CORS(app)
