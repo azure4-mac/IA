@@ -2,10 +2,8 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
-# Defina quantas classes (hieróglifos) você tem no dataset
-num_classes = 3  # exemplo, ajuste para sua quantidade
+num_classes = 3  
 
-# Cria o modelo CNN simples
 model = Sequential([
     Conv2D(32, (3,3), activation='relu', input_shape=(64, 64, 3)),
     MaxPooling2D(2,2),
@@ -22,7 +20,7 @@ model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accur
 datagen = ImageDataGenerator(rescale=1./255, validation_split=0.2)
 
 train_gen = datagen.flow_from_directory(
-    'dataset/',          # pasta com suas imagens
+    'dataset/',
     target_size=(64, 64),
     class_mode='categorical',
     subset='training'
@@ -40,3 +38,6 @@ model.fit(train_gen, validation_data=val_gen, epochs=10)
 
 # Salva o modelo
 model.save("hieroglyph_model.h5")
+
+# continua o treinamento com novos dados
+# model.fit(train_gen, validation_data=val_gen, epochs=5)
