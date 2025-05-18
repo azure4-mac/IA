@@ -3,15 +3,11 @@ import os
 import psycopg
 
 load_dotenv()
-
 DATABASE_URL = os.getenv("DATABASE_URL")
-
-# Cria a conexão
 conn = psycopg.connect(DATABASE_URL)
 
 def get_hieroglyph(code):
     with conn.cursor() as cur:
-        # Busca o hieróglifo pelo código de Gardiner
         cur.execute("""
             SELECT id, gardiner_code, unicode_code, description, ideogram, notes, symbol
             FROM hieroglyph 
@@ -30,7 +26,6 @@ def get_hieroglyph(code):
         notes = row[5]
         symbol =[6]
 
-        # Busca imagens relacionadas
         cur.execute("""
             SELECT image_url, description 
             FROM hieroglyph_images 
