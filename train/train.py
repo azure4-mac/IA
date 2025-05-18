@@ -2,7 +2,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
-num_classes = 3  
+num_classes = 27  
 
 model = Sequential([
     Conv2D(32, (3,3), activation='relu', input_shape=(64, 64, 3)),
