@@ -1,10 +1,14 @@
-INSERT INTO hieroglyph_images (
-    hieroglyph_id,
-    image_url,
-    description
+-- SQLBook: Code
+-- Inserir um hieróglifo A1
+INSERT INTO hieroglyph (
+    gardiner_code, unicode_code, description, ideogram, notes
 ) VALUES (
-    1,  -- id do hieróglifo existente mudar sempre q a img for de outro pfv
-    '',  -- URL da imagem
-    ''    -- descrição da imagem
+'',
+'',
+'',
+'',
+'',
+'',
+'',
+''
 )
-
