@@ -18,7 +18,7 @@ with psycopg.connect(DATABASE_URL) as conn:
     with conn.cursor() as cursor:
 
         for table in tables:
-            rows = table.find_all('tr')[1:]  # pula o cabeçalho
+            rows = table.find_all('tr')[1:]
             for row in rows:
                 cells = row.find_all(['td', 'th'])
                 if len(cells) < 4:
