@@ -1,36 +1,32 @@
-from dotenv import load_dotenv
-import os
 import psycopg
 
-load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL")
-conn = psycopg.connect(DATABASE_URL)
+conn = psycopg.connect("dbname=mac user=postgres password= host=164.90.152.205 port=80")
 
 def get_hieroglyph(code):
     with conn.cursor() as cur:
         cur.execute("""
-            SELECT id, gardiner_code, unicode_code, description, ideogram, notes, symbol
+            SELECT symbol, gardiner, unicode_code, description, ideogram, phonogram, notes
             FROM hieroglyph 
-            WHERE gardiner_code = %s
+            WHERE gardiner = %s
         """, (code,))
         
         row = cur.fetchone()
         if not row:
             return None
 
-        hieroglyph_id = row[0]
-        gardiner_code = row[1]
+        symbol = row[0]
+        gardiner = row[1]
         unicode_code = row[2]
         description = row[3]
         ideogram = row[4]
-        notes = row[5]
-        symbol =[6]
+        phonogram = row[5]
+        notes = row[6]
 
         cur.execute("""
             SELECT image_url, description 
             FROM hieroglyph_images 
-            WHERE hieroglyph_id = %s
-        """, (hieroglyph_id,))
+            WHERE gardiner = %s
+        """, (gardiner,))
         
         images = cur.fetchall()
 
@@ -40,10 +36,12 @@ def get_hieroglyph(code):
         ]
 
         return {
-            "gardiner_code": gardiner_code,
+            "symbol": symbol,
+            "gardiner_code": gardiner,
             "unicode_code": unicode_code,
             "description": description,
             "ideogram": ideogram,
+            "phonogram": phonogram,
             "notes": notes,
             "images": images_list
         }

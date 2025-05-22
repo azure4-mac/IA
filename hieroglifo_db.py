@@ -4,8 +4,8 @@ import requests
 from bs4 import BeautifulSoup
 import psycopg
 
-load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL")
+connection_db = psycopg.connect("dbname=mac user=postgres password= host=164.90.152.205 port=80")
+
 
 url = 'https://en.wikipedia.org/wiki/List_of_Egyptian_hieroglyphs'
 res = requests.get(url)
@@ -14,7 +14,7 @@ tables = soup.find_all('table', {'class': 'wikitable'})
 
 total = 0
 
-with psycopg.connect(DATABASE_URL) as conn:
+with connection_db as conn:
     with conn.cursor() as cursor:
 
         for table in tables:
